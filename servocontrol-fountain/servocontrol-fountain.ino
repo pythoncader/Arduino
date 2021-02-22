@@ -32,6 +32,11 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 #define SERVOMIN  125 // this is the 'minimum' pulse length count (out of 4096)
 #define SERVOMAX  575 // this is the 'maximum' pulse length count (out of 4096)
 
+int broken1 = 12;
+int broken2 = 4;
+int broken3 = 8;
+int broken4 = 7;
+
 // our servo # counter
 uint8_t servonum = 0;
 int myrandom = 0;
@@ -69,10 +74,10 @@ int angleToPulse(int ang){
    int pulse = map(ang,0, 180, SERVOMIN,SERVOMAX);// map angle of 0 to 180 to Servo min and Servo max 
    return pulse;
 }
-void set_angle(int channel, int myangle, float servowait=1){
+void set_angle(int channel, int myangle, float servowait=1000){
   currentAngles[channel] = myangle;
   pwm.setPWM(channel, 0, angleToPulse(myangle));
-  delay(servowait*1000);
+  delay(servowait);
 }
 int pickrandom(int channel){
   switch (channel) {
@@ -109,74 +114,118 @@ int settorandom(int channel, float servowait=0){
 void setup() {
   Serial.begin(9600);
   Serial.println("16 channel Servo test!");
-
+  pinMode(broken1, OUTPUT);
+  pinMode(broken3, OUTPUT);
+  pinMode(broken4, OUTPUT);
+  pinMode(broken2, OUTPUT);
   pwm.begin();
   
   pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
-  for(int i = 0; i<5; i++){
-    set_angle(i, 32, 0);
-  }
-  delay(10000);
 
   //yield();
 }
 
 
-
-// the code inside loop() has been updated by Robojax
-void loop() {
-  
-  /*set_angle(0, min0);
-  set_angle(1, min1);
-  set_angle(2, min2);
-  set_angle(3, min3);
-  set_angle(4, min4);
-  set_angle(5, min5);
-  set_angle(6, min6);
-  set_angle(7, min7);
-  delay(1000);
-  set_angle(0, max0);
-  set_angle(1, max1);
-  set_angle(2, max2);
-  set_angle(3, max3);
-  set_angle(4, max4);
-  set_angle(5, max5);
-  set_angle(6, max6);
-  set_angle(7, max7);
-  delay(1000);*/
-  /*for(int i=0; i<8; i++){
-    settorandom(i);
-    delay(random(0, 300));
-  }*/
-  for(int i = 0; i<5; i++){
-    set_angle(i, 22, 0);
-  }
-  delay(3000);
-  
+void allmax(int delay_value){
   for(int i = 0; i<5; i++){
     set_angle(i, 38, 0);
   }
-  delay(3000);
-  /*
-  set_angle(1, 180, 0);
-  set_angle(2, 180, 0);
-  set_angle(3, 180, 0);
-  set_angle(4, 180, 0);
-  set_angle(5, 180, 0);
-  delay(1000);
-  set_angle(0, 90, 0);
-  set_angle(1, 90, 0);
-  set_angle(2, 90, 0);
-  set_angle(3, 90, 0);
-  set_angle(4, 90, 0);
-  set_angle(5, 90, 0);
-  delay(1000);
-  set_angle(0, 0, 0);
-  set_angle(1, 0, 0);
-  set_angle(2, 0, 0);
-  set_angle(3, 0, 0);
-  set_angle(4, 0, 0);
-  set_angle(5, 0, 0);
-  delay(1000);*/
+  delay(delay_value);
+}
+
+void allmin(int delay_value){
+  for(int i = 0; i<5; i++){
+    set_angle(i, 22, 0);
+  }
+  delay(delay_value);
+}
+
+void allmid(int delay_value){
+  for(int i = 0; i<5; i++){
+    set_angle(i, 30, 0);
+  }
+  delay(delay_value);
+}
+
+void Allon(int delay_value){
+  digitalWrite(broken1, 1);
+  digitalWrite(broken2, 1);
+  digitalWrite(broken3, 1);
+  digitalWrite(broken4, 1);
+  delay(delay_value);
+}
+
+void Firstoff(int delay_value){
+  //First
+  digitalWrite(broken1, LOW);
   
+  digitalWrite(broken2, HIGH);
+
+  digitalWrite(broken3, HIGH);
+ 
+  digitalWrite(broken4, HIGH);
+
+  delay(delay_value);
+
+  Allon(1000);
+}
+
+void Secondoff(int delay_value){
+  //Second
+  digitalWrite(broken1, HIGH);
+  
+  digitalWrite(broken2, LOW);
+
+  digitalWrite(broken3, HIGH);
+ 
+  digitalWrite(broken4, HIGH);
+
+  delay(delay_value);
+
+  Allon(1000);
+}
+
+void Thirdoff(int delay_value){
+  //Third
+  digitalWrite(broken1, HIGH);
+  
+  digitalWrite(broken2, HIGH);
+
+  digitalWrite(broken3, LOW);
+ 
+  digitalWrite(broken4, HIGH);
+
+  delay(delay_value);
+
+  Allon(1000);
+}
+
+void Fourthoff(int delay_value){
+  //Fourth
+  digitalWrite(broken1, HIGH);
+  
+  digitalWrite(broken2, HIGH);
+
+  digitalWrite(broken3, HIGH);
+ 
+  digitalWrite(broken4, LOW);
+
+  delay(delay_value);
+
+  Allon(1000);
+}
+
+void loop() {
+  Allon(0);
+  Serial.println("ON");
+   set_angle(1, 32);
+   set_angle(1, 25);
+  /*//Allon(3000);
+  //Firstoff(5000);
+  allmin(3000);
+  //Secondoff(5000);
+  allmid(3000);
+  //Thirdoff(5000);
+  //Fourthoff(5000);
+  allmax(3000);*/
 }
