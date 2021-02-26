@@ -15,6 +15,7 @@
   Written by Limor Fried/Ladyada for Adafruit Industries.  
   BSD license, all text above must be included in any redistribution
  ****************************************************/
+//Written by Cade Rigby
 
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
